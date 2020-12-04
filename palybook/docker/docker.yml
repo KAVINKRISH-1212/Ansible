@@ -1,0 +1,53 @@
+- hosts: all
+  tasks:
+  - name: "Configuring docker repo"
+    copy:
+            dest: "/etc/yum.repos.d/"
+            src: "docker.repo"
+            gpgcheck: no
+  - name: "Installing Prerequisite for Docker"
+    package:
+            name: "containerd.io"
+            state: present
+  - name: "Installing Docker"
+    package:
+            name: "docker-ce"
+            state: present
+  - name: "Strat the Service"
+    service:
+            name: "docker"
+            state: started
+            enabled: yes
+  - name: "Installing Python"
+    package:
+            name: "python3"
+  - name: "Installing docker-py"
+    pip:
+            name: "docker-py"
+  - name: "Pull httpd image from Docker Hub"
+    docker_image:
+            name: "httpd"
+            source: pull
+            tag: latest
+  - name: "Enabling selinux permission for docker"
+    selinux_permissive:
+            name: container_t
+            permissive: true
+  - name: "Launch HTTPD container"
+    docker_container:
+            name: "web"
+            image: "httpd"
+            state: started
+            exposed_ports:
+            - "80"
+            ports:
+            - "8080:80"
+  - name: "Copying files"
+    copy:
+            src: "home.html"
+            dest: "/var/www/html/index.html"
+            
+
+
+
+

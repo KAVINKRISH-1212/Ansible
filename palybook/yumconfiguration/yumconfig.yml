@@ -1,0 +1,27 @@
+- hosts: all
+  vars:
+    - dvd_dir: "software_dvd"
+  tasks: 
+  - name: "create folder"
+    file:
+            state: directory
+            path : "/root/{{ dvd_dir  }}"
+  - name: "mount dvd"
+    mount:
+            src: "/dev/cdrom"
+            path: "/root/{{ dvd_dir  }}"
+            state: mounted 
+            fstype: iso9660
+  - name: "configure yum AppStream" 
+    yum_repository:
+            baseurl: "/root/{{ dvd_dir }}/AppStream"
+            description: "Package from AppStream"
+            name: "AppStream"
+            gpgcheck: no
+  - name: "configure yum BaseOS"
+    yum_repository:
+            baseurl: "/root/{{ dvd_dir }}/BaseOS"
+            description: "Package from BaseOS"
+            name: "BaseOS"
+            gpgcheck: no
+

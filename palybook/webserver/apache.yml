@@ -1,0 +1,21 @@
+- hosts: all
+  tasks:
+  - name: "Install httpd"
+    package:
+          name: "httpd"
+          state: present
+  - name: "Copy file"
+    copy:
+          src: "home.html"
+          dest: "/var/www/html/"
+  - name: "Start the service"
+    service:
+          name: "httpd"
+          state: started
+          enabled: yes
+  - name: "Enabling firewall for port 80"
+    firewalld:
+          port: 80/tcp
+          state: enabled
+          permanent: yes
+          immediate: yes   

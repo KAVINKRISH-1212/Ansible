@@ -1,0 +1,31 @@
+- hosts: all
+  vars:
+  tasks:
+  - name: "Installing httpd"
+    package:
+            name: "httpd"
+            state: present
+  - name: "Creating new directory for DocumentRoot"
+    file:
+            state: directory
+            path: "/var/www/krish"
+  - name: "Updating thr conf file"
+    copy:
+            dest: "/etc/httpd/conf.d/krish.conf"
+            src: "krish.conf"
+  - name: "copying file to new DocumentRoot"
+    copy:
+            dest: "/var/www/krish/demo.html"
+            content: "New Port and Document Root \n"
+  - name: "Start the service"
+    service:
+            name: "httpd"
+            state: restarted
+  - name: "Enabling Firewall for port 8080"
+    firewalld:
+            port: 8080/tcp
+            state: enabled
+            permanent: yes
+            immediate: yes
+   
+  

@@ -1,0 +1,24 @@
+- hosts: slave
+
+  vars_prompt:
+  - name: "master_ip"
+    private: no
+  - name: "datanode_dir"
+    private: no
+
+  tasks: 
+  - name: "Creating Directory"
+    file:
+            state: directory
+            path: "{{ datanode_dir }}"
+  - name: "Configuring core-site.xml"
+    template:
+            dest: "/etc/hadoop/core-site.xml"
+            src: "slave/core-site.xml"
+  - name: "Configuring hdfs.xml"
+    template:
+            dest: "/etc/hadoop/hdfs-site.xml"
+            src: "slave/hdfs-site.xml"
+  - name: "Start the service"
+    command: hadoop-daemon.sh start datanode    
+

@@ -1,0 +1,23 @@
+- hosts: master
+
+  vars_prompt:
+  - name: "namenode_dir"
+    private: no
+  tasks: 
+  - name: "Creating Directory"
+    file:
+            state: directory
+            path: "{{ namenode_dir }}"
+  - name: "Configuring core-site.xml"
+    template:
+            dest: "/etc/hadoop/core-site.xml"
+            src: "master/core-site.xml"
+  - name: "Configuring hdfs.xml"
+    template:
+            dest: "/etc/hadoop/hdfs-site.xml"
+            src: "master/hdfs-site.xml"
+  - name: "Format Namenode"
+    shell: echo Y | hadoop namenode -format
+  - name: "Start the service"
+    command: hadoop-daemon.sh start namenode    
+
